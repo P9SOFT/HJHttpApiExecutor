@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0261DEE31C30C64D00D7DFDA /* CommonWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 0261DEDE1C30C64D00D7DFDA /* CommonWorker.m */; };
 		0261DEE41C30C64D00D7DFDA /* SampleExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0261DEE01C30C64D00D7DFDA /* SampleExecutor.m */; };
 		0261DEE51C30C64D00D7DFDA /* SampleManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0261DEE21C30C64D00D7DFDA /* SampleManager.m */; };
 		0261DEED1C3DE78D00D7DFDA /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0261DEEC1C3DE78D00D7DFDA /* ViewController.xib */; };
@@ -40,8 +39,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0261DEDD1C30C64D00D7DFDA /* CommonWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonWorker.h; sourceTree = "<group>"; };
-		0261DEDE1C30C64D00D7DFDA /* CommonWorker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonWorker.m; sourceTree = "<group>"; };
 		0261DEDF1C30C64D00D7DFDA /* SampleExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleExecutor.h; sourceTree = "<group>"; };
 		0261DEE01C30C64D00D7DFDA /* SampleExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SampleExecutor.m; sourceTree = "<group>"; };
 		0261DEE11C30C64D00D7DFDA /* SampleManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleManager.h; sourceTree = "<group>"; };
@@ -125,8 +122,6 @@
 				0276BC3C1C2A993400ECE423 /* AppDelegate.m */,
 				0276BC3E1C2A993400ECE423 /* ViewController.h */,
 				0276BC3F1C2A993400ECE423 /* ViewController.m */,
-				0261DEDD1C30C64D00D7DFDA /* CommonWorker.h */,
-				0261DEDE1C30C64D00D7DFDA /* CommonWorker.m */,
 				0261DEDF1C30C64D00D7DFDA /* SampleExecutor.h */,
 				0261DEE01C30C64D00D7DFDA /* SampleExecutor.m */,
 				0261DEE11C30C64D00D7DFDA /* SampleManager.h */,
@@ -379,7 +374,6 @@
 				0261DEF21C4736DB00D7DFDA /* HJHttpApiExecutor.m in Sources */,
 				0276BC3D1C2A993400ECE423 /* AppDelegate.m in Sources */,
 				0276BC3A1C2A993400ECE423 /* main.m in Sources */,
-				0261DEE31C30C64D00D7DFDA /* CommonWorker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

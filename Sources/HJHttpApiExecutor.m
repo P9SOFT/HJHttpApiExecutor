@@ -1,9 +1,9 @@
 //
 //  HJHttpApiExecutor.h
-//	HJBox
+//	Hydra Jelly Box
 //
-//  Created by Na Tae Hyun on 13. 10. 24..
-//  Copyright (c) 2013년 Na Tae Hyun. All rights reserved.
+//  Created by Tae Hyun Na on 2013. 10. 24.
+//  Copyright (c) 2014, P9 SOFT, Inc. All rights reserved.
 //
 //  Licensed under the MIT license.
 
