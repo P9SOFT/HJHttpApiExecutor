@@ -51,6 +51,11 @@
     return HJHttpApiExecutorHttpMethodTypePost;
 }
 
+- (HJAsyncHttpDelivererPostContentType)postContentTypeFromQuery:(id)anQuery
+{
+    return HJAsyncHttpDelivererPostContentTypeUrlEncoded;
+}
+
 - (BOOL)appendResultParameterToQuery:(id)anQuery withParsedObject:(id)parsedObject
 {
     if( [parsedObject isKindOfClass:[NSDictionary class]] == NO ) {

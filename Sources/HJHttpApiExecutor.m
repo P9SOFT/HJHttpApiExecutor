@@ -108,6 +108,12 @@
 				case HJHttpApiExecutorHttpMethodTypePost :
 					[deliverer setPostWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
 					break;
+                case HJHttpApiExecutorHttpMethodTypePut :
+                    [deliverer setPutWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    break;
+                case HJHttpApiExecutorHttpMethodTypeDelete :
+                    [deliverer setDeleteWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    break;
 				default :
 					[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusInternalError]];
 					return YES;

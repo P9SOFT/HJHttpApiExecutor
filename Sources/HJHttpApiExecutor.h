@@ -38,7 +38,9 @@ typedef enum _HJHttpApiExecutorStatus_
 typedef enum _HJHttpApiExecutorHttpMethodType_
 {
 	HJHttpApiExecutorHttpMethodTypeGet,
-	HJHttpApiExecutorHttpMethodTypePost
+	HJHttpApiExecutorHttpMethodTypePost,
+    HJHttpApiExecutorHttpMethodTypePut,
+    HJHttpApiExecutorHttpMethodTypeDelete
     
 } HJHttpApiExecutorHttpMethodType;
 
