@@ -42,7 +42,7 @@
 
 - (BOOL)standbyWithWorkerName:(NSString *)workerName
 {
-	if( (self.standby == YES) || ([workerName length] <= 0) ) {
+	if( (self.standby == YES) || (workerName.length <= 0) ) {
 		return NO;
 	}
 	
@@ -57,7 +57,7 @@
 - (void)requestServerApi:(NSString *)serverApiUrl httpMethod:(NSString *)httpMethod parameterDict:(NSDictionary *)parameterDict completion:(void (^)(NSMutableDictionary *))completion
 {
     // check parameter
-    if( ([serverApiUrl length] == 0) || (([httpMethod isEqualToString:@"GET"] == NO) && ([httpMethod isEqualToString:@"POST"] == NO)) ) {
+    if( (serverApiUrl.length == 0) || (([httpMethod isEqualToString:@"GET"] == NO) && ([httpMethod isEqualToString:@"POST"] == NO)) ) {
         if( completion != nil ) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(nil);
@@ -114,24 +114,24 @@
         }
         return nil;
     }
-    [paramDict setObject:serverApiUrl forKey:SampleManagerNotifyParameterKeyServerApiUrl];
+    paramDict[SampleManagerNotifyParameterKeyServerApiUrl] = serverApiUrl;
     
     // and request parameters,
     NSMutableDictionary *requestDict = [result parameterForKey:SampleExecutorParameterRequestParameterKey];
     if( requestDict != nil ) {
-        [paramDict setObject:requestDict forKey:SampleManagerNotifyParameterKeyRequestDict];
+        paramDict[SampleManagerNotifyParameterKeyRequestDict] = requestDict;
     }
     
     // and received result parameters,
     NSMutableDictionary * resultDict = [result parameterForKey:SampleExecutorParameterResultParameterKey];
     if( resultDict != nil ) {
-        [paramDict setObject:resultDict forKey:SampleManagerNotifyParameterKeyResultDict];
+        paramDict[SampleManagerNotifyParameterKeyResultDict] = resultDict;
     }
     
     // and failed flag.
     HJHttpApiExecutorStatus status = (HJHttpApiExecutorStatus)[[result parameterForKey:HJHttpApiExecutorParameterKeyStatus] integerValue];
     if( (status != HJHttpApiExecutorStatusReceived) && (status != HJHttpApiExecutorStatusEmptyData) ) {
-        [paramDict setObject:@"Y" forKey:SampleManagerNotifyParameterKeyFailedFlag];
+        paramDict[SampleManagerNotifyParameterKeyFailedFlag] = @"Y";
     }
     
     // if completion block specified, then call it.
@@ -140,7 +140,7 @@
     }
     
     // if 'paramDict' is empty, then we don't have to notification, so return 'nil'.
-    if( [paramDict count] == 0 ) {
+    if( paramDict.count == 0 ) {
         return nil;
     }
 	

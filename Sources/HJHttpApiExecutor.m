@@ -10,7 +10,7 @@
 #import "HJHttpApiExecutor.h"
 
 
-@interface HJHttpApiExecutor( HJHttpApiExecutorPrivate )
+@interface HJHttpApiExecutor()
 
 - (HYResult *) resultForQuery: (id)anQuery withStatus: (HJHttpApiExecutorStatus)status;
 
@@ -46,7 +46,7 @@
 		
 		receivedData = [anQuery parameterForKey: HJAsyncHttpDelivererParameterKeyBody];
 		
-		if( [receivedData length] > 0 ) {
+		if( receivedData.length > 0 ) {
 			switch( [self receiveBodyTypeFromQuery: anQuery] ) {
 				case HJHttpApiExecutorReceiveBodyTypeCustom :
                     if( (parsedObject = [self objectFromData: receivedData fromQuery:anQuery]) != nil ) {
@@ -73,7 +73,7 @@
 	} else {
 		
 		apiUrlString = [self apiUrlFromQuery: anQuery];
-		if( [apiUrlString length] <= 0 ) {
+		if( apiUrlString.length <= 0 ) {
 			[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusInvalidParameter]];
 			return YES;
 		}
@@ -97,8 +97,8 @@
 		}
 		deliverer.trustedHosts = [self trustedHosts];
 		
-		[anQuery setParameter: [NSNumber numberWithUnsignedInteger: (NSUInteger)deliverer.issuedId] forKey: HJHttpApiExecutorParameterKeyDelivererIssuedId];
-		[closeQuery setParameter: [NSNumber numberWithUnsignedInteger: (NSUInteger)deliverer.issuedId] forKey: HJHttpApiExecutorParameterKeyDelivererIssuedId];
+		[anQuery setParameter: @((NSUInteger)deliverer.issuedId) forKey: HJHttpApiExecutorParameterKeyDelivererIssuedId];
+		[closeQuery setParameter: @((NSUInteger)deliverer.issuedId) forKey: HJHttpApiExecutorParameterKeyDelivererIssuedId];
 		
 		if( [self customSetupWithDeliverer: deliverer fromQuery: anQuery] == NO ) {
 			switch( [self httpMethodType: anQuery] ) {
@@ -126,7 +126,7 @@
         if( ([self activeLimiterName] != nil) && ([self activeLimiterCount] > 0) ) {
             [deliverer activeLimiterName: [self activeLimiterName] withCount: [self activeLimiterCount]];
         }
-		[deliverer setTimeoutInterval: [self timeoutIntervalFromQuery: anQuery]];
+		deliverer.timeoutInterval = [self timeoutIntervalFromQuery: anQuery];
 		[self bindAsyncTask: deliverer];
 		
 		[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusRequested]];
@@ -154,7 +154,7 @@
 	
 	if( (result = [HYResult resultWithName: self.name]) != nil ) {
 		[result setParametersFromDictionary: [anQuery paramDict]];
-		[result setParameter: [NSNumber numberWithInteger: status] forKey: HJHttpApiExecutorParameterKeyStatus];
+		[result setParameter: @(status) forKey: HJHttpApiExecutorParameterKeyStatus];
 	}
 	
 	return result;

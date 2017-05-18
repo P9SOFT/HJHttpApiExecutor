@@ -19,7 +19,7 @@
 #define		HJHttpApiExecutorParameterKeyCloseQueryCall				@"HJHttpApiExecutorParameterKeyCloseQueryCall"
 #define		HJHttpApiExecutorParameterKeyDelivererIssuedId			@"HJHttpApiExecutorParameterKeyDelivererIssuedId"
 
-typedef enum _HJHttpApiExecutorStatus_
+typedef NS_ENUM(NSInteger, HJHttpApiExecutorStatus)
 {
 	HJHttpApiExecutorStatusDummy,
 	HJHttpApiExecutorStatusRequested,
@@ -32,46 +32,43 @@ typedef enum _HJHttpApiExecutorStatus_
 	HJHttpApiExecutorStatusFailedResponse,
 	HJHttpApiExecutorStatusDataParsingError,
 	HJHttpApiExecutorStatusEmptyData
-    
-} HJHttpApiExecutorStatus;
+};
 
-typedef enum _HJHttpApiExecutorHttpMethodType_
+typedef NS_ENUM(NSInteger, HJHttpApiExecutorHttpMethodType)
 {
 	HJHttpApiExecutorHttpMethodTypeGet,
 	HJHttpApiExecutorHttpMethodTypePost,
     HJHttpApiExecutorHttpMethodTypePut,
     HJHttpApiExecutorHttpMethodTypeDelete
-    
-} HJHttpApiExecutorHttpMethodType;
+};
 
-typedef enum _HJHttpApiExecutorReceiveBodyType_
+typedef NS_ENUM(NSInteger, HJHttpApiExecutorReceiveBodyType)
 {
 	HJHttpApiExecutorReceiveBodyTypeStream,
     HJHttpApiExecutorReceiveBodyTypeCustom
-    
-} HJHttpApiExecutorReceiveBodyType;
+};
 
 
 @interface HJHttpApiExecutor : HYExecuter
 
 // you must override and implement these methods.
 
-- (NSString *) apiUrlFromQuery: (id)anQuery;
+- (NSString * _Nullable) apiUrlFromQuery: (id _Nullable)anQuery;
 
 // override these methods if need.
 
-- (BOOL) isValidParameterForQuery: (id)anQuery;
-- (NSDictionary *) apiParameterFromQuery: (id)anQuery;
-- (HJHttpApiExecutorHttpMethodType) httpMethodType: (id)anQuery;
-- (HJAsyncHttpDelivererPostContentType) postContentTypeFromQuery: (id)anQuery;
-- (HJHttpApiExecutorReceiveBodyType) receiveBodyTypeFromQuery: (id)anQuery;
-- (NSString *) activeLimiterName;
+- (BOOL) isValidParameterForQuery: (id _Nullable)anQuery;
+- (NSDictionary * _Nullable) apiParameterFromQuery: (id _Nullable)anQuery;
+- (HJHttpApiExecutorHttpMethodType) httpMethodType: (id _Nullable)anQuery;
+- (HJAsyncHttpDelivererPostContentType) postContentTypeFromQuery: (id _Nullable)anQuery;
+- (HJHttpApiExecutorReceiveBodyType) receiveBodyTypeFromQuery: (id _Nullable)anQuery;
+- (NSString * _Nullable) activeLimiterName;
 - (NSInteger) activeLimiterCount;
-- (id) objectFromData:(NSMutableData *)data fromQuery: (id)anQuery;
-- (BOOL) customSetupWithDeliverer: (HJAsyncHttpDeliverer *)deliverer fromQuery: (id)anQuery;
-- (BOOL) additionalSetupWithDeliverer: (HJAsyncHttpDeliverer *)deliverer fromQuery: (id)anQuery;
-- (BOOL) appendResultParameterToQuery: (id)anQuery withParsedObject: (id)parsedObject;
-- (NSTimeInterval) timeoutIntervalFromQuery: (id)anQuery;
-- (NSArray *) trustedHosts;
+- (id _Nullable) objectFromData:(NSMutableData * _Nullable)data fromQuery: (id _Nullable)anQuery;
+- (BOOL) customSetupWithDeliverer: (HJAsyncHttpDeliverer * _Nullable)deliverer fromQuery: (id _Nullable)anQuery;
+- (BOOL) additionalSetupWithDeliverer: (HJAsyncHttpDeliverer * _Nullable)deliverer fromQuery: (id _Nullable)anQuery;
+- (BOOL) appendResultParameterToQuery: (id _Nullable)anQuery withParsedObject: (id _Nullable)parsedObject;
+- (NSTimeInterval) timeoutIntervalFromQuery: (id _Nullable)anQuery;
+- (NSArray * _Nullable) trustedHosts;
 
 @end

@@ -25,7 +25,7 @@
 
 @implementation ViewController
 
-- (id)init
+- (instancetype)init
 {
     if( (self = [super init]) != nil ) {
         // observe SampleManager's notificaion.
@@ -56,10 +56,10 @@
 
 - (void)resignFirstResponderAll
 {
-    if( [self.serverApiUrlTextField isFirstResponder] == YES ) {
+    if( (self.serverApiUrlTextField).isFirstResponder == YES ) {
         [self.serverApiUrlTextField resignFirstResponder];
     }
-    if( [self.parameterTextField isFirstResponder] == YES ) {
+    if( (self.parameterTextField).isFirstResponder == YES ) {
         [self.parameterTextField resignFirstResponder];
     }
 }
@@ -79,7 +79,7 @@
     NSArray *parameters = [self.parameterTextField.text componentsSeparatedByString:@"&"];
     for( NSString *parameter in parameters ) {
         NSArray *pair = [parameter componentsSeparatedByString:@"="];
-        if( [pair count] != 2 ) {
+        if( pair.count != 2 ) {
             return nil;
         }
         paramDict[pair[0]] = pair[1];
@@ -90,7 +90,7 @@
 
 - (void)appendTextToConsole:(NSString *)text
 {
-    if( [text length] == 0 ) {
+    if( text.length == 0 ) {
         return;
     }
     
