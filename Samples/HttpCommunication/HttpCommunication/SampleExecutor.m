@@ -34,7 +34,7 @@
 - (NSDictionary *)apiParameterFromQuery:(id)anQuery
 {
     id anObject = [anQuery parameterForKey:SampleExecutorParameterRequestParameterKey];
-    if( [anQuery isKindOfClass:[NSDictionary class]] == NO ) {
+    if( [anObject isKindOfClass:[NSDictionary class]] == NO ) {
         return nil;
     }
     
