@@ -151,8 +151,6 @@
 			return YES;
 		}
 		deliverer.trustedHosts = [self trustedHosts];
-        
-        [self setTask:deliverer forKey:[@(deliverer.issuedId) stringValue]];
 		
 		[anQuery setParameter: @((NSUInteger)deliverer.issuedId) forKey: HJHttpApiExecutorParameterKeyDelivererIssuedId];
 		[closeQuery setParameter: @((NSUInteger)deliverer.issuedId) forKey: HJHttpApiExecutorParameterKeyDelivererIssuedId];
@@ -184,8 +182,9 @@
             [deliverer activeLimiterName: [self activeLimiterName] withCount: [self activeLimiterCount]];
         }
 		deliverer.timeoutInterval = [self timeoutIntervalFromQuery: anQuery];
-		[self bindAsyncTask: deliverer];
-		
+        if( [self bindAsyncTask: deliverer] == YES ) {
+            [self setTask:deliverer forKey:[@(deliverer.issuedId) stringValue]];
+        }
 		[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusRequested]];
 		
 	}
