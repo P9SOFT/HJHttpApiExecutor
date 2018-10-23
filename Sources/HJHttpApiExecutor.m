@@ -10,14 +10,41 @@
 #import "HJHttpApiExecutor.h"
 
 
-@interface HJHttpApiExecutor()
+@interface HJHttpApiExecutor() <NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
+{
+    NSURLSession        *_session;
+    NSMutableDictionary *_taskDict;
+}
 
+- (void)setTask:(HJAsyncHttpDeliverer *)deliverer forKey:(NSString *)key;
+- (HJAsyncHttpDeliverer *)taskForKey:(NSString *)key;
+- (void)removeTaskForKey:(NSString *)key;
 - (HYResult *) resultForQuery: (id)anQuery withStatus: (HJHttpApiExecutorStatus)status;
 
 @end
 
 
 @implementation HJHttpApiExecutor
+
+- (instancetype)init
+{
+    if( (self = [super init]) != nil ) {
+        if( (_session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil]) == nil ) {
+            return nil;
+        }
+        if( (_taskDict = [NSMutableDictionary new]) == nil ) {
+            return nil;
+        }
+    }
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    [_session invalidateAndCancel];
+    _session = nil;
+}
 
 - (NSString *) name
 {
@@ -27,6 +54,38 @@
 - (NSString *) brief
 {
 	return @"executor for communication with server API based on HTTP";
+}
+
+- (void)setTask:(HJAsyncHttpDeliverer *)deliverer forKey:(NSString *)key
+{
+    if( (deliverer == nil) && (key == nil) ) {
+        return;
+    }
+    @synchronized (self) {
+        _taskDict[key] = deliverer;
+    }
+}
+
+- (HJAsyncHttpDeliverer *)taskForKey:(NSString *)key
+{
+    if( key == nil ) {
+        return nil;
+    }
+    HJAsyncHttpDeliverer *deliverer = nil;
+    @synchronized (self) {
+        deliverer = _taskDict[key];
+    }
+    return deliverer;
+}
+
+- (void)removeTaskForKey:(NSString *)key
+{
+    if( key == nil ) {
+        return;
+    }
+    @synchronized (self) {
+        [_taskDict removeObjectForKey:key];
+    }
 }
 
 - (BOOL) calledExecutingWithQuery: (id)anQuery
@@ -41,6 +100,7 @@
 		
 		if( [[anQuery parameterForKey: HJAsyncHttpDelivererParameterKeyFailed] boolValue] == YES ) {
 			[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusNetworkError]];
+            [self removeTaskForKey:[[anQuery parameterForKey:HJAsyncHttpDelivererParameterKeyIssuedId] stringValue]];
 			return YES;
 		}
 		
@@ -69,6 +129,8 @@
 		} else {
 			[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusEmptyData]];
 		}
+        
+        [self removeTaskForKey:[[anQuery parameterForKey:HJAsyncHttpDelivererParameterKeyIssuedId] stringValue]];
 		
 	} else {
 		
@@ -90,6 +152,7 @@
 		
 		[closeQuery setParametersFromDictionary: [anQuery paramDict]];
 		[closeQuery setParameter: @"Y" forKey: HJHttpApiExecutorParameterKeyCloseQueryCall];
+        [closeQuery setParameter:_session forKey:HJAsyncHttpDelivererParameterKeySession];
 		
 		if( (deliverer = [[HJAsyncHttpDeliverer alloc] initWithCloseQuery: closeQuery]) == nil ) {
 			[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusInternalError]];
@@ -127,8 +190,9 @@
             [deliverer activeLimiterName: [self activeLimiterName] withCount: [self activeLimiterCount]];
         }
 		deliverer.timeoutInterval = [self timeoutIntervalFromQuery: anQuery];
-		[self bindAsyncTask: deliverer];
-		
+        if( [self bindAsyncTask: deliverer] == YES ) {
+            [self setTask:deliverer forKey:[@(deliverer.issuedId) stringValue]];
+        }
 		[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusRequested]];
 		
 	}
@@ -228,6 +292,47 @@
 - (NSArray *) trustedHosts
 {
 	return nil;
+}
+
+#pragma mark -
+#pragma mark NSURLSessionTaskDelegate, NSURLSessionDataDelegate
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler
+{
+    if( completionHandler != nil ) {
+        completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
+{
+    HJAsyncHttpDeliverer *deliverer = [self taskForKey:dataTask.taskDescription];
+    [deliverer receiveResponse:response];
+    if( completionHandler != nil ) {
+        completionHandler(NSURLSessionResponseAllow);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
+{
+    HJAsyncHttpDeliverer *deliverer = [self taskForKey:dataTask.taskDescription];
+    [deliverer receiveData:data];
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
+{
+    HJAsyncHttpDeliverer *deliverer = [self taskForKey:task.taskDescription];
+    [deliverer sendBodyData:bytesSent totalBytesWritten:totalBytesSent totalBytesExpectedToWrite:totalBytesExpectedToSend];
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(nullable NSError *)error
+{
+    HJAsyncHttpDeliverer *deliverer = [self taskForKey:task.taskDescription];
+    if( error != nil ) {
+        [deliverer failWithError:error];
+    } else {
+        [deliverer finishLoading];
+    }
 }
 
 @end

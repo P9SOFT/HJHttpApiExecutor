@@ -3,5 +3,5 @@ platform :ios, '8.1'
 
 target "HttpCommunication" do
 	pod 'Hydra'
-	pod 'HJAsyncHttpDeliverer'
+	pod 'HJAsyncHttpDeliverer', '~> 2.0'
 end
