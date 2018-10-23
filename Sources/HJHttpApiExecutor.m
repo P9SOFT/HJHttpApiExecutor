@@ -61,7 +61,9 @@
     if( (deliverer == nil) && (key == nil) ) {
         return;
     }
-    _taskDict[key] = deliverer;
+    @synchronized (self) {
+        _taskDict[key] = deliverer;
+    }
 }
 
 - (HJAsyncHttpDeliverer *)taskForKey:(NSString *)key
@@ -69,7 +71,11 @@
     if( key == nil ) {
         return nil;
     }
-    return _taskDict[key];
+    HJAsyncHttpDeliverer *deliverer = nil;
+    @synchronized (self) {
+        deliverer = _taskDict[key];
+    }
+    return deliverer;
 }
 
 - (void)removeTaskForKey:(NSString *)key
@@ -77,7 +83,9 @@
     if( key == nil ) {
         return;
     }
-    [_taskDict removeObjectForKey:key];
+    @synchronized (self) {
+        [_taskDict removeObjectForKey:key];
+    }
 }
 
 - (BOOL) calledExecutingWithQuery: (id)anQuery
