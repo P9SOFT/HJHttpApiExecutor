@@ -169,13 +169,25 @@
 					[deliverer setGetWithUrlString: apiUrlString queryStringDict: [self apiParameterFromQuery: anQuery]];
 					break;
 				case HJHttpApiExecutorHttpMethodTypePost :
-					[deliverer setPostWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    if( [self isUsingCustomBodyForQuery:anQuery] == NO ) {
+                        [deliverer setPostWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    } else {
+                        [deliverer setPostWithUrlString: apiUrlString body:[self customBodyFromQuery: anQuery] contentTypeValue: [self contentTypeForCustomBodyFromQuery: anQuery]];
+                    }
 					break;
                 case HJHttpApiExecutorHttpMethodTypePut :
-                    [deliverer setPutWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    if( [self isUsingCustomBodyForQuery:anQuery] == NO ) {
+                        [deliverer setPutWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    } else {
+                        [deliverer setPutWithUrlString: apiUrlString body:[self customBodyFromQuery: anQuery] contentTypeValue: [self contentTypeForCustomBodyFromQuery: anQuery]];
+                    }
                     break;
                 case HJHttpApiExecutorHttpMethodTypeDelete :
-                    [deliverer setDeleteWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    if( [self isUsingCustomBodyForQuery:anQuery] == NO ) {
+                        [deliverer setDeleteWithUrlString: apiUrlString formDataDict: [self apiParameterFromQuery: anQuery] contentType: [self postContentTypeFromQuery: anQuery]];
+                    } else {
+                        [deliverer setDeleteWithUrlString: apiUrlString body:[self customBodyFromQuery: anQuery] contentTypeValue: [self contentTypeForCustomBodyFromQuery: anQuery]];
+                    }
                     break;
 				default :
 					[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusInternalError]];
@@ -234,9 +246,24 @@
 	return YES;
 }
 
+- (BOOL) isUsingCustomBodyForQuery: (id _Nullable)anQuery
+{
+    return NO;
+}
+
 - (NSDictionary *) apiParameterFromQuery: (id)anQuery
 {
 	return nil;
+}
+
+- (NSData * _Nullable) customBodyFromQuery: (id _Nullable)anQuery
+{
+    return nil;
+}
+
+- (NSString * _Nullable) contentTypeForCustomBodyFromQuery: (id _Nullable)anQuery
+{
+    return nil;
 }
 
 - (HJHttpApiExecutorHttpMethodType) httpMethodType: (id)anQuery
