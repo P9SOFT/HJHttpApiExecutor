@@ -58,7 +58,10 @@ typedef NS_ENUM(NSInteger, HJHttpApiExecutorReceiveBodyType)
 // override these methods if need.
 
 - (BOOL) isValidParameterForQuery: (id _Nullable)anQuery;
+- (BOOL) isUsingCustomBodyForQuery: (id _Nullable)anQuery;
 - (NSDictionary * _Nullable) apiParameterFromQuery: (id _Nullable)anQuery;
+- (NSData * _Nullable) customBodyFromQuery: (id _Nullable)anQuery;
+- (NSString * _Nullable) contentTypeForCustomBodyFromQuery: (id _Nullable)anQuery;
 - (HJHttpApiExecutorHttpMethodType) httpMethodType: (id _Nullable)anQuery;
 - (HJAsyncHttpDelivererPostContentType) postContentTypeFromQuery: (id _Nullable)anQuery;
 - (HJHttpApiExecutorReceiveBodyType) receiveBodyTypeFromQuery: (id _Nullable)anQuery;

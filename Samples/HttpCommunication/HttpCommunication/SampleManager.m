@@ -93,6 +93,14 @@
 
 - (NSMutableDictionary *)sampleExecutorHandlerWithResult:(HYResult *)result
 {
+    // get status
+    HJHttpApiExecutorStatus status = (HJHttpApiExecutorStatus)[[result parameterForKey:HJHttpApiExecutorParameterKeyStatus] integerValue];
+    
+    // if requesting notify then skip.
+    if( status == HJHttpApiExecutorStatusRequested ) {
+        return nil;
+    }
+    
     // get complete handler.
     void (^completionBlock)(NSMutableDictionary *) = [result parameterForKey:SampleManagerNotifyParameterKeyCompletionBlock];
     
@@ -129,7 +137,6 @@
     }
     
     // and failed flag.
-    HJHttpApiExecutorStatus status = (HJHttpApiExecutorStatus)[[result parameterForKey:HJHttpApiExecutorParameterKeyStatus] integerValue];
     if( (status != HJHttpApiExecutorStatusReceived) && (status != HJHttpApiExecutorStatusEmptyData) ) {
         paramDict[SampleManagerNotifyParameterKeyFailedFlag] = @"Y";
     }
