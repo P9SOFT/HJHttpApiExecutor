@@ -202,9 +202,8 @@
             [deliverer activeLimiterName: [self activeLimiterName] withCount: [self activeLimiterCount]];
         }
 		deliverer.timeoutInterval = [self timeoutIntervalFromQuery: anQuery];
-        if( [self bindAsyncTask: deliverer] == YES ) {
-            [self setTask:deliverer forKey:[@(deliverer.issuedId) stringValue]];
-        }
+        [self bindAsyncTask: deliverer];
+        [self setTask:deliverer forKey:[@(deliverer.issuedId) stringValue]];
 		[self storeResult: [self resultForQuery: anQuery withStatus: HJHttpApiExecutorStatusRequested]];
 		
 	}
